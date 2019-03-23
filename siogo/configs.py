@@ -20,7 +20,7 @@ def make_simple_headless_chrome_driver():
     options.add_argument("--headless")
     return webdriver.Chrome(chrome_options=options)
 
-class ScrapperConfigStaszic:
+class DriverConfigStaszic:
     ADDRESS = "https://sio2.staszic.waw.pl"
     USERNAME_BOX_ID = "id_username"
     PASSWORD_BOX_ID = "id_password"

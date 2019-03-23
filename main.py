@@ -6,7 +6,7 @@ from siogo import configs
 from siogo.siodriver import SIODriver
 
 try:
-    s_config = configs.ScrapperConfigStaszic
+    s_config = configs.DriverConfigStaszic
     get_driver = configs.make_simple_headless_chrome_driver
     sio = SIODriver(s_config, get_driver)
     sio.login(lambda: input("Username: "), lambda: getpass.getpass(prompt="Password: |"))

@@ -53,6 +53,7 @@ class SIODriver:
         return result
 
     def list_problems(self, contest):
+        assert self.is_logged_in
         self.driver.get(self.path_to("c", contest, "p"))
         def get():
             soup = self.get_soup()
@@ -69,9 +70,11 @@ class SIODriver:
         return with_retries(get, (exceptions.PageNotLoaded, ), 3, delay=0.66)
 
     def get_problem_text_path(self, contest, problem_code):
+        assert self.is_logged_in
         return self.path_to("c", contest, "p", problem_code)
 
     def submit_solution(self, contest, problem_code, filename):
+        assert self.is_logged_in
         if not os.path.exists(filename):
             raise FileNotFoundError("Solution file was not found.")
 
