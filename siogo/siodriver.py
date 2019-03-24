@@ -77,8 +77,11 @@ class SIODriver(abc.ABC):
     def format_extra_problem_data(self, data):
         return ""
 
+    def get_problem_text_path(self, contest, problem_code):
+        return self.path_to("c", contest, "p", problem_code)
+
     def get_problem_text(self, contest, problem_code):
-        return self.session.get(self.path_to("c", contest, "p", problem_code))
+        return self.session.get(self.get_problem_text_path(contest, problem_code))
 
     def submit_solution(self, contest, problem_code, filename):
         assert self.is_logged_in, "User must be logged in to submit"

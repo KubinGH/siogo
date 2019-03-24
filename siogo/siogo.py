@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     parser.add_argument("host", help="Specify the SIO2 host. Either a link or an abbreviation, if it is specified in `driverconfig.abbreviations`")
     parser.add_argument("-L", "--login", action="store_true", help="Log into a user account")
-    parser.add_argument("-B", "--notable", action="store_true", help="Print without a table. Don't use `texttable`, even if it is available.")
+    parser.add_argument("-B", "--notable", action="store_true", help="Print without a table. Don't use `texttable`, even if it is available")
 
     subparsers = parser.add_subparsers(dest="subparser", help="Available commands: \"contests\", \"problems\", \"submit\"")
     
@@ -41,6 +41,11 @@ if __name__ == "__main__":
 
     parser_problems = subparsers.add_parser("problems", add_help=False, help="List visible contest problems")
     parser_problems.add_argument("contest", help="The contest to list problems from")
+
+    parser_problemtext = subparsers.add_parser("problemtext", add_help=False, help="Get the problem text")
+    parser_problemtext.add_argument("contest", help="The contest the problem belongs to")
+    parser_problemtext.add_argument("code", help="The problem's code")
+    parser_problemtext.add_argument("filename", help="The file to write the problem text to. The file extension is added automatically")
 
     parser_submit = subparsers.add_parser("submit", add_help=False, help="Submit a solution")
     parser_submit.add_argument("contest", help="The contest to submit the solution to")
@@ -80,6 +85,23 @@ if __name__ == "__main__":
             for code, data in problems.items():
                 extra = driver.format_extra_problem_data(data)
                 print("{}: '{}'. {}[{}]".format(code, data["name"], (extra + ". ") if extra else "", data["score"] if data["score"] is not None else "?"))
+
+    elif method == "problemtext":
+        response = driver.get_problem_text(args.contest, args.code)
+        t = response.headers["Content-Type"]
+        if t == "application/pdf":
+            filename = args.filename + ".pdf"
+        elif t == "application/x-dvi":
+            filename = args.filename + ".dvi"
+        elif "text/html" in t:
+            link = driver.get_problem_text_path(args.contest, args.code)
+            print("! Got redirected to text in HTML, only partial text is available. A web browser will be needed. Link: {}".format(link))
+            filename = args.filename + ".html"
+        else:
+            print("! Don't know the extension for 'Content-Type: {}'".format(t))
+            filename = args.filename
+        with open(filename, "wb") as file:
+            file.write(response.content)
 
     elif method == "submit":
         assert args.login, "Must be logged in to submit"

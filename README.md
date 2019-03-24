@@ -7,11 +7,15 @@ The console command `siogo` has the following syntax:
 * `-L/--login`: make the driver log in before handling the requests.
 * `-B/--notable`: do not use `texttable` to format output.
 
-`subcommand` is one of: `contests`, `problems`, `submit`.
+`subcommand` is one of: `contests`, `problems`, `problemtext`, `submit`.
 * `contests` has no additional arguments. It lists the visible contests.
 * `problems` requires one positional argument: `contest`, which is the contest page path. Lists the visible problems from `contest`.
+* `problemtext` downloads the problem text and requires three positional arguments: 
+  * `contest` (same as above),
+  * `code`, the problem code,
+  * `filename`, the file to save the text to. The file extension will be added at the end of this filename.
 * `submit` submits a given solution and requires three positional arguments:
-  * `contest`, which is the contest page path,
+  * `contest`,
   * `code`, which is the short problem code,
   * `filename`, the solution filename.
   * There is one optional argument: `-f/--force`, that makes the command not require confirmation from the user.
