@@ -79,7 +79,7 @@ if __name__ == "__main__":
         else:
             for code, data in problems.items():
                 extra = driver.format_extra_problem_data(data)
-                print("{}: '{}'. {}[{}]".format(code, data["name"], (extra + ". ") if extra else "", data["score"]))
+                print("{}: '{}'. {}[{}]".format(code, data["name"], (extra + ". ") if extra else "", data["score"] if data["score"] is not None else "?"))
 
     elif method == "submit":
         assert args.login, "Must be logged in to submit"
