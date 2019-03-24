@@ -1,9 +1,6 @@
 class ScrapperFail(Exception):
     pass
 
-class LoginFailed(ScrapperFail):
-    pass
-
 class TooManyRetries(ScrapperFail):
     pass
 
