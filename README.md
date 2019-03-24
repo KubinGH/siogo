@@ -40,7 +40,7 @@ In order to use `SIODriver` you must inherit from it and implement supply the fo
 
 Example usage of the driver is presented in `main.py`.
 
-*Previously the driver was implemented with Selenium. The old, unsupported implementation is available in `/siogo/old_selenium/`. `main.py` still includes example usage.*
+*Previously the driver was implemented with Selenium. The old, unsupported implementation is available in `/siogo/old_selenium/`. `examples/example_driver.py` still includes example usage.*
 
 Requirements:
 - Python 3,
