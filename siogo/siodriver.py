@@ -110,8 +110,13 @@ class SIODriver(abc.ABC):
                 "file": open(filename, "rb")
             }
         )
-
-
+    def configure_problem_table(self, table, problems):
+        table.set_cols_align(["l", "l", "r"])
+        table.set_cols_width([7, 52, 5])
+        table.header(["Code", "Name", "Score"])
+    def make_problem_table_row(self, problems, code):
+        data = problems[code]
+        return [code, data["name"], data["score"] if data["score"] is not None else " ? "]
 
 class StaszicSIODriver(SIODriver):
     host = "https://sio2.staszic.waw.pl"
@@ -127,8 +132,13 @@ class StaszicSIODriver(SIODriver):
             "submit_limit": int(submit_info[1])
         })
         return value
+    def configure_problem_table(self, table, problems):
+        table.set_cols_align(["l", "l", "c", "r"])
+        table.set_cols_width([11, 40, 9, 5])
+        table.header(["Code", "Name", "Submits", "Score"])
+    def make_problem_table_row(self, problems, code):
+        data = problems[code]
+        return [code, data["name"], "{: ^3} / {: ^3}".format(data["submits_used"], data["submit_limit"]), data["score"] if data["score"] is not None else " ? "]
 
-    def format_extra_problem_data(self, data):
-        return "Submits: {} / {}".format(data["submits_used"], data["submit_limit"])
 
 drivers[StaszicSIODriver.host] = StaszicSIODriver

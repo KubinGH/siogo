@@ -18,24 +18,22 @@ def grouper(iterable, n, fillvalue=None):
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 def contest_list_table(driver, contests):
-    columns = os.get_terminal_size().columns
     t_columns = 36
-    n = max(1, columns // t_columns)
-    table = texttable.Texttable(max_width=columns - 2)
+    n = 2
+    table = texttable.Texttable(78)
     table.set_cols_align(["l"] * n)
     table.set_cols_width([t_columns - 4] * n)
+    table.set_deco(0)
     rows = [list(g) for g in grouper(contests, n, fillvalue="")]
     table.add_rows(rows, header=False)
     return table.draw()
 
 def problem_list_table(driver, problems):
     columns = os.get_terminal_size().columns
-    table = texttable.Texttable(max_width=columns - 2)
-    table.set_cols_align(["l", "l", "l", "r"])
-    table.set_cols_width([10, 30, 20, 5])
-    table.header(["code", "name", "extra", "score"])
+    table = texttable.Texttable(78)
+    driver.configure_problem_table(table, problems)
     for code, data in problems.items():
-        row = [code, data["name"], driver.format_extra_problem_data(data), data["score"] if data["score"] is not None else "?"]
+        row = driver.make_problem_table_row(problems, code)
         table.add_row(row)
     return table.draw()
 
