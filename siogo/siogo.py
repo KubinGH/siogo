@@ -19,7 +19,7 @@ def grouper(iterable, n, fillvalue=None):
 
 def contest_list_table(driver, contests):
     columns = os.get_terminal_size().columns
-    t_columns = 30
+    t_columns = 36
     n = max(1, columns // t_columns)
     table = texttable.Texttable(max_width=columns - 2)
     table.set_cols_align(["l"] * n)
