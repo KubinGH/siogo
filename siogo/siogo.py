@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     elif method == "submit":
         assert args.login, "Must be logged in to submit"
-        resp = ""
+        resp = "" if not args.force else "y"
         while resp.lower() not in ("y", "n"):
             resp = input("Are you sure you want to submit solution <{}> to problem <{}> @ <{}>? [Y/n]: ".format(args.filename, args.code, args.contest))
         if resp.lower() == "y":
