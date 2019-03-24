@@ -1,5 +1,5 @@
 # siogo
-`siogo` is a simple SIO2 text-based client under development.
+`siogo` is a simple SIO2 text-based client.
 
 The console command `siogo` has the following syntax:
 ```siogo [host] [-L/--login] [-B/--notable] {subcommand}```

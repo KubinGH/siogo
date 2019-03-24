@@ -28,7 +28,7 @@ class MultiParserHelpAction(argparse._HelpAction):
         parser.exit()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog="siogo", add_help=False)
+    parser = argparse.ArgumentParser(prog="siogo", description="Simple text-based SIO2 client.", add_help=False)
     parser.add_argument("-h", "--help", action=MultiParserHelpAction, help="Show this help message and exit")  # add custom help
 
     parser.add_argument("host", help="Specify the SIO2 host. Either a link or an abbreviation, if it is specified in `driverconfig.abbreviations`")
