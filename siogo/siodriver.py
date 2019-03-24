@@ -5,6 +5,8 @@ import re
 import requests
 import bs4
 
+drivers = {}
+
 class SIODriver(abc.ABC):
     host = None
     current_username_box_id = None
@@ -27,8 +29,6 @@ class SIODriver(abc.ABC):
     def login(self, get_username, get_password):
         cnt = self.list_contests()[0]
         self.session.get(self.path_to("c", cnt, "login"))
-        print(self.path_to("c", cnt, "login"))
-        print(self.session.cookies["csrftoken"], self.session.cookies["sessionid"])
         username = get_username()
         response = self.session.post(
             self.path_to("c", cnt, "login"),
@@ -58,7 +58,7 @@ class SIODriver(abc.ABC):
     def extract_problem_data(self, contest, cells):
         return {
             "name": cells[1].find_all("a")[0].text, 
-            "score": int(cells[3].text.strip()) if cells[3].text.strip() else float("NaN")
+            "score": int(cells[3].text.strip()) if cells[3].text.strip() else None
         }
 
     def list_problems(self, contest):
@@ -73,6 +73,9 @@ class SIODriver(abc.ABC):
             value = self.extract_problem_data(contest, cells)
             result[key] = value
         return result
+
+    def format_extra_problem_data(self, data):
+        return ""
 
     def get_problem_text(self, contest, problem_code):
         return self.session.get(self.path_to("c", contest, "p", problem_code))
@@ -105,6 +108,8 @@ class SIODriver(abc.ABC):
             }
         )
 
+
+
 class StaszicSIODriver(SIODriver):
     host = "https://sio2.staszic.waw.pl"
     current_username_box_id = "navbar-username"
@@ -119,3 +124,8 @@ class StaszicSIODriver(SIODriver):
             "submit_limit": int(submit_info[1])
         })
         return value
+
+    def format_extra_problem_data(self, data):
+        return "Submits: {} / {}".format(data["submits_used"], data["submit_limit"])
+
+drivers[StaszicSIODriver.host] = StaszicSIODriver

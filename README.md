@@ -1,7 +1,24 @@
 # siogo
 `siogo` is a simple SIO2 text-based client under development.
 
-Right now, the driver (`siogo.siodriver.SIODriver`), based on `requests`, works and supports the following:
+The console command `siogo` has the following syntax:
+```siogo [host] [-L/--login] [-B/--notable] {subcommand}```
+* `host` is either the full hostname or an abbreviation, if it is specified in `driverconfig`.
+* `-L/--login`: make the driver log in before handling the requests.
+* `-B/--notable`: do not use `texttable` to format output.
+
+`subcommand` is one of: `contests`, `problems`, `submit`.
+* `contests` has no additional arguments. It lists the visible contests.
+* `problems` requires one positional argument: `contest`, which is the contest page path. Lists the visible problems from `contest`.
+* `submit` submits a given solution and requires three positional arguments:
+  * `contest`, which is the contest page path,
+  * `code`, which is the short problem code,
+  * `filename`, the solution filename.
+  * There is one optional argument: `-f/--force`, that makes the command not require confirmation from the user.
+
+All the data is pretty-printed using the `texttable` module. If it is not available, it will still work, but it ain't pretty. You can force it to not be used with `-B/--notable`.
+
+The driver (`siogo.siodriver.SIODriver`), based on `requests`, works and supports the following:
 * Navigating the page (`path_to(*path)`, arguments are strings) and extracting the HTML (`get_soup(*path)`). More complicated HTML handling is implemented with `bs4`, aka Beautiful Soup.
 * Logging in (`login(get_username, get_password)`, both arguments are functions). Credentials may be supplied in any way, for example Python's `getpass`, but a function that returns them must be passed.
   * The login is checked by seeing if the username on the navbar is correct. If it is not, `ValueError` is raised.
@@ -22,7 +39,8 @@ Example usage of the driver is presented in `main.py`.
 *Previously the driver was implemented with Selenium. The old, unsupported implementation is available in `/siogo/old_selenium/`. `main.py` still includes example usage.*
 
 Requirements:
-- Python 3
-- Requests
-- Beautiful Soup
+- Python 3,
+- Requests (`requests`),
+- Beautiful Soup (`bs4`),
+- (Optional) `texttable`.
 
