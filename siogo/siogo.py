@@ -31,8 +31,8 @@ def contest_list_table(driver, contests):
 def problem_list_table(driver, problems):
     columns = os.get_terminal_size().columns
     table = texttable.Texttable(max_width=columns - 2)
-    table.set_cols_align(["c", "l", "l", "c"])
-    table.set_cols_width([10, 30, 20, 4])
+    table.set_cols_align(["l", "l", "l", "r"])
+    table.set_cols_width([10, 30, 20, 5])
     table.header(["code", "name", "extra", "score"])
     for code, data in problems.items():
         row = [code, data["name"], driver.format_extra_problem_data(data), data["score"] if data["score"] is not None else "?"]
