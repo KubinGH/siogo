@@ -133,12 +133,15 @@ class StaszicSIODriver(SIODriver):
         })
         return value
     def configure_problem_table(self, table, problems):
+        submitW = max(len(str(x["submit_limit"])) for x in problems.values())
         table.set_cols_align(["l", "l", "c", "r"])
-        table.set_cols_width([11, 40, 9, 5])
+        table.set_cols_width([11, 40 + (11 - (3+2*submitW)), 3 + 2*submitW, 5])
         table.header(["Code", "Name", "Submits", "Score"])
     def make_problem_table_row(self, problems, code):
         data = problems[code]
-        return [code, data["name"], "{: ^3} / {: ^3}".format(data["submits_used"], data["submit_limit"]), data["score"] if data["score"] is not None else " ? "]
+        submitW = max(len(str(x["submit_limit"])) for x in problems.values())
+        tpl = "{{: ^{}}} / {{: ^{}}}".format(submitW, submitW)
+        return [code, data["name"], tpl.format(data["submits_used"], data["submit_limit"]), data["score"] if data["score"] is not None else " ? "]
 
 
 drivers[StaszicSIODriver.host] = StaszicSIODriver

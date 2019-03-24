@@ -31,6 +31,7 @@ def contest_list_table(driver, contests):
 def problem_list_table(driver, problems):
     columns = os.get_terminal_size().columns
     table = texttable.Texttable(78)
+    table.set_deco(2)
     driver.configure_problem_table(table, problems)
     for code, data in problems.items():
         row = driver.make_problem_table_row(problems, code)
