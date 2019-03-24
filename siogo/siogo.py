@@ -1,3 +1,4 @@
+import itertools
 import argparse
 import getpass
 import os
@@ -10,8 +11,33 @@ else:
     TEXTTABLE_ENABLED = True
 
 import driverconfig
-import tableutils
 import siodriver
+
+def grouper(iterable, n, fillvalue=None):
+    args = [iter(iterable)] * n
+    return itertools.zip_longest(*args, fillvalue=fillvalue)
+
+def contest_list_table(driver, contests):
+    columns = os.get_terminal_size().columns
+    t_columns = 30
+    n = max(1, columns // t_columns)
+    table = texttable.Texttable(max_width=columns - 2)
+    table.set_cols_align(["l"] * n)
+    table.set_cols_width([t_columns - 4] * n)
+    rows = [list(g) for g in grouper(contests, n, fillvalue="")]
+    table.add_rows(rows, header=False)
+    return table.draw()
+
+def problem_list_table(driver, problems):
+    columns = os.get_terminal_size().columns
+    table = texttable.Texttable(max_width=columns - 2)
+    table.set_cols_align(["c", "l", "l", "c"])
+    table.set_cols_width([10, 30, 20, 4])
+    table.header(["code", "name", "extra", "score"])
+    for code, data in problems.items():
+        row = [code, data["name"], driver.format_extra_problem_data(data), data["score"] if data["score"] is not None else "?"]
+        table.add_row(row)
+    return table.draw()
 
 class MultiParserHelpAction(argparse._HelpAction):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -64,23 +90,16 @@ if __name__ == "__main__":
         driver.login(lambda: input("Username: "), lambda: getpass.getpass())    
 
     if method == "contests":
+        contests = driver.list_contests()
         if not args.notable and TEXTTABLE_ENABLED:
-            print(tableutils.table_formatted_list(driver.list_contests()))
+            print(contest_list_table(driver, contests))
         else:
-            print("\n".join("* " + c for c in driver.list_contests()))
+            print("\n".join("* " + c for c in contests))
 
     elif method == "problems":
         problems = driver.list_problems(args.contest)
         if not args.notable and TEXTTABLE_ENABLED:
-            columns = os.get_terminal_size().columns
-            table = texttable.Texttable(max_width=columns - 2)
-            table.set_cols_align(["c", "l", "l", "c"])
-            table.set_cols_width([10, 30, 20, 4])
-            table.header(["code", "name", "extra", "score"])
-            for code, data in problems.items():
-                row = [code, data["name"], driver.format_extra_problem_data(data), data["score"] if data["score"] is not None else "?"]
-                table.add_row(row)
-            print(table.draw())
+            print(problem_list_table(driver, problems))
         else:
             for code, data in problems.items():
                 extra = driver.format_extra_problem_data(data)
