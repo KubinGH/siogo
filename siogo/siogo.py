@@ -10,7 +10,7 @@ except ImportError:
 else:
     TEXTTABLE_ENABLED = True
 
-import driverconfig
+import config
 import siodriver
 
 def grouper(iterable, n, fillvalue=None):
@@ -20,7 +20,7 @@ def grouper(iterable, n, fillvalue=None):
 def contest_list_table(driver, contests):
     t_columns = 36
     n = 2
-    table = texttable.Texttable(78)
+    table = texttable.Texttable(config.terminal_columns)
     table.set_cols_align(["l"] * n)
     table.set_cols_width([t_columns - 4] * n)
     table.set_deco(0)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="siogo", description="Simple text-based SIO2 client.", add_help=False)
     parser.add_argument("-h", "--help", action=MultiParserHelpAction, help="Show this help message and exit")  # add custom help
 
-    parser.add_argument("host", help="Specify the SIO2 host. Either a link or an abbreviation, if it is specified in `driverconfig.abbreviations`")
+    parser.add_argument("host", help="Specify the SIO2 host. Either a link or an abbreviation, if it is specified in `config.abbreviations`")
     parser.add_argument("-L", "--login", action="store_true", help="Log into a user account")
     parser.add_argument("-B", "--notable", action="store_true", help="Print without a table. Don't use `texttable`, even if it is available")
 
@@ -81,8 +81,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     method = args.subparser
 
-    host = driverconfig.abbreviations[args.host] \
-            if args.host in driverconfig.abbreviations else args.host
+    host = config.abbreviations[args.host] \
+            if args.host in config.abbreviations else args.host
     Driver = siodriver.drivers[host]
     driver = Driver()
     if args.login:

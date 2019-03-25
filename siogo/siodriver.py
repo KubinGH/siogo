@@ -136,9 +136,10 @@ class StaszicSIODriver(SIODriver):
         })
         return value
     def configure_problem_table(self, table, problems):
-        submitW = max(len(str(x["submit_limit"])) for x in problems.values())
+        submitW = min(4, max((len(str(x["submit_limit"])) for x in problems.values()), default=4))
+        codeW = min(11, max(4, max((len(str(k)) for k in problems.keys()), default=4)))
         table.set_cols_align(["l", "l", "c", "r"])
-        table.set_cols_width([11, 40 + (11 - (3+2*submitW)), 3 + 2*submitW, 5])
+        table.set_cols_width([codeW, 40 + (11 - (3+2*submitW)) + (11 - codeW), 3 + 2*submitW, 5])
         table.header(["Code", "Name", "Submits", "Score"])
     def make_problem_table_row(self, problems, code):
         data = problems[code]
