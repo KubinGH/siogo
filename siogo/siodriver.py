@@ -52,7 +52,10 @@ class SIODriver(abc.ABC):
         for link in soup.find_all("a"):
             match = re.match(r"/c/(.*)/", link.get("href"))
             if match:
-                result.append(match.group(1))
+                s = match.group(1)
+                if s in result:
+                    result.remove(s)
+                result.append(s)
         return result
 
     def extract_problem_data(self, contest, cells):
