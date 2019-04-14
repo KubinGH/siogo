@@ -20,7 +20,7 @@ def grouper(iterable, n, fillvalue=None):
 def contest_list_table(driver, contests):
     t_columns = 36
     n = 2
-    table = texttable.Texttable(config.terminal_columns)
+    table = texttable.Texttable(78)
     table.set_cols_align(["l"] * n)
     table.set_cols_width([t_columns - 4] * n)
     table.set_deco(0)
