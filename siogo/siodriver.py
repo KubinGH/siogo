@@ -27,18 +27,23 @@ class SIODriver(abc.ABC):
         return bs4.BeautifulSoup(self.session.get(self.path_to(*path)).text, "html.parser")
 
     def login(self, get_username, get_password):
-        cnt = self.list_contests()[0]
-        self.session.get(self.path_to("c", cnt, "login"))
+        contests = self.list_contests()
+        if contests:
+            cnt = contests[0]
+            path_args = ("c", cnt, "login")
+        else:
+            path_args = ("login",)
+        self.session.get(self.path_to(*path_args))
         username = get_username()
         response = self.session.post(
-            self.path_to("c", cnt, "login"),
+            self.path_to(*path_args),
             data={
                 "csrfmiddlewaretoken": self.session.cookies["csrftoken"],
                 "username": username,
                 "password": get_password()
         },
             headers={
-                "Referer": self.path_to("c", cnt, "login"),
+                "Referer": self.path_to(*path_args),
         })
         main = self.get_soup()
         if main.find(id=self.current_username_box_id).text.strip() != username:

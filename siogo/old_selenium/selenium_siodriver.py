@@ -74,7 +74,7 @@ class SeleniumSIODriver:
         assert self.is_logged_in
         return self.path_to("c", contest, "p", problem_code)
 
-    def submit_solution(self, contest, problem_code, filename):
+    def submit_solution(self, contest, problem_code, filename, force=False):
         assert self.is_logged_in
         if not os.path.exists(filename):
             raise FileNotFoundError("Solution file was not found.")
@@ -99,7 +99,7 @@ class SeleniumSIODriver:
 
         submit_button = [btn for btn in self.driver.find_elements_by_tag_name("button") if btn.text.strip() in self.config.SUBMIT_BUTTON_POSSIBLE_TEXT][0]
 
-        confirm = input("Are you sure you want to submit file <{}> to problem <{}>? [Y]: ".format(filename, problem_name))
+        confirm = input("Are you sure you want to submit file <{}> to problem <{}>? [Y]: ".format(filename, problem_name)) if not force else 'y'
         if confirm.strip().lower() == "y":
             submit_button.click()
         else:
